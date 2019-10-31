@@ -19,6 +19,7 @@ const (
 	RPAREN=")"
 	LBRACE="{"
 	RBRACE="}"
+	STRING = "STRING"
 	// Operators
 	PLUS = "+"
 	MINUS = "-"
