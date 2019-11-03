@@ -19,6 +19,8 @@ const (
 	RPAREN=")"
 	LBRACE="{"
 	RBRACE="}"
+	LBRACKET="["
+	RBRACKET="]"
 	STRING = "STRING"
 	// Operators
 	PLUS = "+"
