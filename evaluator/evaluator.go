@@ -95,6 +95,15 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalIndexExpression(left, index)
 	case *ast.HashLiteral:
 		return evalHashLiteral(node, env)
+	case *ast.AssignmentStatement:
+		if _, ok := env.Get(node.Name.Value); !ok {
+			return newError("identifier not declared: " + node.Name.Value)
+		}
+		newVal := Eval(node.Value, env)
+		if isError(newVal) {
+			return newVal
+		}
+		env.Set(node.Name.Value, newVal)
 	}
 
 	return nil

@@ -113,6 +113,11 @@ func (p *Parser) parseStatement() ast.Statement {
 		return p.parseLetStatement()
 	case token.RETURN:
 		return p.parseReturnStatement()
+	case token.IDENT:
+		if p.peekTokenIs(token.ASSIGN) {
+			return p.parseAssignmentStatement()
+		}
+		fallthrough
 	default:
 		return p.parseExpressionStatement()
 	}
@@ -453,7 +458,7 @@ func (p *Parser) parseIndexExpression(left ast.Expression) ast.Expression {
 	return exp
 }
 
-func (p*Parser) parseHashLiteral() ast.Expression {
+func (p *Parser) parseHashLiteral() ast.Expression {
 	hash := &ast.HashLiteral{Token: p.curToken}
 	hash.Pairs = make(map[ast.Expression]ast.Expression)
 
@@ -480,4 +485,16 @@ func (p*Parser) parseHashLiteral() ast.Expression {
 	}
 
 	return hash
+}
+
+func (p *Parser) parseAssignmentStatement() *ast.AssignmentStatement {
+	stmt := &ast.AssignmentStatement{Token: p.curToken}
+	stmt.Name = ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+	p.nextToken()
+	p.nextToken()
+	stmt.Value = p.parseExpression(LOWEST)
+	for !p.curTokenIs(token.SEMICOLON) {
+		p.nextToken()
+	}
+	return stmt
 }

@@ -984,3 +984,57 @@ func TestParsingHashLiteralsExpressions(t *testing.T) {
 	}
 }
 
+func TestAssignmentStatements(t *testing.T) {
+	tests := []struct {
+		input string
+		expectedIdentifier string
+		expectedValue interface{}
+	}{
+		{"x = 5;", "x", 5},
+		{"y = true;", "y", true},
+		{"foobar = y;", "foobar", "y"},
+	}
+	for _, tt := range tests {
+		l := lexer.New(tt.input)
+		p := New(l)
+		program := p.ParseProgram()
+		checkParserErrors(t, p)
+		if len(program.Statements) != 1 {
+			t.Fatalf("program.Statements does not contain 1 statements. got=%d",
+			len(program.Statements))
+		}
+		stmt := program.Statements[0]
+		if !testAssignmentStatement(t, stmt, tt.expectedIdentifier) {
+			return
+		}
+		val := stmt.(*ast.AssignmentStatement).Value
+		if !testLiteralExpression(t, val, tt.expectedValue) {
+			return
+		}
+	}
+}
+
+func testAssignmentStatement(t *testing.T, s ast.Statement, name string) bool {
+	if s.TokenLiteral() != name {
+		t.Errorf("s.TokenLiteral not %q, got %q", name, s.TokenLiteral())
+		return false
+	}
+
+	stmt, ok := s.(*ast.AssignmentStatement)
+	if !ok {
+		t.Errorf("s not *ast.AssignmentStatement, got=%T", s)
+		return false
+	}
+
+	if stmt.Name.Value != name {
+		t.Errorf("letStmt.Name.Value not %s. got=%s", name, stmt.Name.Value)
+		return false
+	}
+
+	if stmt.Name.TokenLiteral() != name {
+		t.Errorf("s.Name not '%s', got=%s", name, stmt.Name)
+		return false
+	}
+
+	return true
+}

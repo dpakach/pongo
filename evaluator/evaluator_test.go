@@ -280,6 +280,21 @@ func TestLetStatement(t *testing.T) {
 	}
 }
 
+func TestAssignmentStatements(t *testing.T) {
+	tests := []struct {
+		input string
+		expected int64
+	} {
+		{"let a = 5; a = 34; a;", 34},
+		{"let a = 5 * 5; a = 5*6; a;", 30},
+		{"let a = 5; let b = a; b = a + 23; b;", 28},
+	}
+
+	for _, tt := range tests {
+		testIntegerObject(t, testEval(tt.input), tt.expected)
+	}
+}
+
 func TestFunctionObject(t *testing.T) {
 	input := "fn(x){x + 2;};"
 
