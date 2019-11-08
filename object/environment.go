@@ -1,5 +1,7 @@
 package object
 
+import "fmt"
+
 func NewEnvironment() *Environment {
 	s := make(map[string]Object)
 	return &Environment{store: s, outer: nil}
@@ -21,6 +23,14 @@ func (e *Environment) Get(name string) (Object, bool) {
 func (e *Environment) Set(name string, val Object) Object {
 	e.store[name] = val
 	return val
+}
+
+func (e *Environment) String() string {
+	s := ""
+	for key, value := range e.store {
+		s = s + fmt.Sprintf("%q, %v\n", key, value)
+	}
+	return s
 }
 
 func NewEnclosedEnvironment(outer *Environment) *Environment {

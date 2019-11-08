@@ -355,3 +355,48 @@ func (as *AssignmentStatement) String() string {
 	out.WriteString((";"))
 	return out.String()
 }
+
+type ForLoop struct {
+	Token token.Token
+	Setup Statement
+	Test Expression
+	Update Statement
+	Body *BlockStatement
+}
+
+func (fe *ForLoop) expressionNode() {}
+func (fe *ForLoop) TokenLiteral() string {return fe.Token.Literal}
+func (fe *ForLoop) String() string {
+	var out bytes.Buffer
+	out.WriteString("for(")
+	out.WriteString(fe.Setup.String())
+	out.WriteString("; ")
+	out.WriteString(fe.Test.String())
+	out.WriteString("; ")
+	out.WriteString(fe.Update.String())
+	out.WriteString("; ")
+	out.WriteString("){")
+	out.WriteString(fe.Body.String())
+	out.WriteString("}")
+
+	return out.String()
+}
+
+type WhileLoop struct {
+	Token token.Token
+	Test Expression
+	Body *BlockStatement
+}
+
+func (fe *WhileLoop) expressionNode() {}
+func (fe *WhileLoop) TokenLiteral() string {return fe.Token.Literal}
+func (fe *WhileLoop) String() string {
+	var out bytes.Buffer
+	out.WriteString("while(")
+	out.WriteString(fe.Test.String())
+	out.WriteString("){")
+	out.WriteString(fe.Body.String())
+	out.WriteString("}")
+
+	return out.String()
+}

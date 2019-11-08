@@ -572,3 +572,44 @@ func TestHashIndexExpressions(t *testing.T) {
 		}
 	}
 }
+
+func TestForLoop(t *testing.T) {
+	tests := []struct {
+		input string
+		expected interface{}
+	} {
+		{"let s = 0; for(let i=0; i<10; i=i+1) { s = 24; s = i; }; s;", 9},
+		{"let s = 0; for(let i=0; i<10; i=i+1) { s = s + i; }; s;", 45},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		integer, ok := tt.expected.(int)
+		if ok {
+			testIntegerObject(t, evaluated, int64(integer))
+		} else {
+			testNullObject(t, evaluated)
+		}
+	}
+}
+
+func TestWhileLoop(t *testing.T) {
+	tests := []struct {
+		input string
+		expected interface{}
+	} {
+		{"let s = 0; while(s < 10) { s = s + 1; }; s;", 10},
+		{"let s = 0; let p = 0; while( s < 10 ) { p = p + 5; s = s + 1; }; p;", 50},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		integer, ok := tt.expected.(int)
+		if ok {
+			testIntegerObject(t, evaluated, int64(integer))
+		} else {
+			testNullObject(t, evaluated)
+		}
+	}
+}
+

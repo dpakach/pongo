@@ -32,6 +32,8 @@ const (
 	GT = ">"
 	// Keywords
 	FUNCTION = "FUNCTION"
+	FOR="FOR"
+	WHILE="WHILE"
 	LET= "LET"
 	TRUE = "TRUE"
 	FALSE = "FALSE"
@@ -51,6 +53,8 @@ var keywords = map[string]TokenType{
 	"if": IF,
 	"else": ELSE,
 	"return": RETURN,
+	"for": FOR,
+	"while": WHILE,
 }
 
 func LookupIdent(ident string) TokenType {

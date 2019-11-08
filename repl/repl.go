@@ -12,6 +12,8 @@ import (
 
 const PROMPT = ":-/ >> "
 
+var stack []string
+
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
 	env := object.NewEnvironment()
@@ -23,6 +25,7 @@ func Start(in io.Reader, out io.Writer) {
 			return
 		}
 		line := scanner.Text()
+		stack = append(stack, line)
 		l := lexer.New(line)
 		p := parser.New(l)
 

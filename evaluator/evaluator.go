@@ -104,6 +104,10 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			return newVal
 		}
 		env.Set(node.Name.Value, newVal)
+	case *ast.ForLoop:
+		return evalForLoop(node, env)
+	case *ast.WhileLoop:
+		return evalWhileLoop(node, env)
 	}
 
 	return nil
@@ -239,6 +243,49 @@ func evalIfExpression(ie *ast.IfExpression, env *object.Environment) object.Obje
 	} else {
 		return NULL
 	}
+}
+
+func evalForLoop(fl *ast.ForLoop, env *object.Environment) object.Object {
+	Eval(fl.Setup, env)
+
+	stop := Eval(fl.Test, env)
+	if isError(stop) {
+		return stop
+	}
+	stop, ok := stop.(*object.Boolean)
+	if !ok {
+		return newError("Test condition of the loop doesnot evaluate a boolean value: %s", fl.Test)
+	}
+	for (stop != FALSE) {
+		Eval(fl.Body, env)
+		Eval(fl.Update, env)
+		stop = Eval(fl.Test, env)
+		stop, ok = stop.(*object.Boolean)
+		if !ok {
+			return newError("Test condition of the loop doesnot evaluate a boolean value: %s", fl.Test)
+		}
+	}
+	return nil
+}
+
+func evalWhileLoop(wl *ast.WhileLoop, env *object.Environment) object.Object {
+	stop := Eval(wl.Test, env)
+	if isError(stop) {
+		return stop
+	}
+	stop, ok := stop.(*object.Boolean)
+	if !ok {
+		return newError("Test condition of the loop doesnot evaluate a boolean value: %s", wl.Test)
+	}
+	for (stop != FALSE) {
+		Eval(wl.Body, env)
+		stop = Eval(wl.Test, env)
+		stop, ok = stop.(*object.Boolean)
+		if !ok {
+			return newError("Test condition of the loop doesnot evaluate a boolean value: %s", wl.Test)
+		}
+	}
+	return nil
 }
 
 func isTruthy(obj object.Object) bool {
@@ -394,3 +441,4 @@ func evalHashIndexExpression(hash, index object.Object) object.Object {
 
 	return pair.Value
 }
+

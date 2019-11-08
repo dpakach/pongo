@@ -11,7 +11,7 @@ func TestLetStatements(t *testing.T) {
 	tests := []struct {
 		input string
 		expectedIdentifier string
-	expectedValue interface{}
+		expectedValue interface{}
 	}{
 		{"let x = 5;", "x", 5},
 		{"let y = true;", "y", true},
@@ -1037,4 +1037,96 @@ func testAssignmentStatement(t *testing.T, s ast.Statement, name string) bool {
 	}
 
 	return true
+}
+
+func TestForLoop(t *testing.T) {
+	input := `for(let i = 0; i < 10; i = i + 1) { a = hello; e = c+d; }`
+
+	l := lexer.New(input)
+
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program.Body does not contain %d statements. got=%d\n", 1, len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
+	}
+
+	exp, ok := stmt.Expression.(*ast.ForLoop)
+	if !ok {
+		t.Fatalf("stmt.Expression is not ast.ForLoop. got=%T", stmt.Expression)
+	}
+
+	if !testLetStatement(t, exp.Setup, "i") {
+		return
+	}
+
+	if !testInfixExpression(t, exp.Test, "i", "<", 10) {
+		return
+	}
+
+	if !testAssignmentStatement(t, exp.Update, "i") {
+		return
+	}
+
+	if len(exp.Body.Statements) != 2 {
+		t.Errorf("Body is not 1 statements. got=%d\n", len(exp.Body.Statements))
+	}
+
+	_, ok = exp.Body.Statements[0].(*ast.AssignmentStatement)
+	if !ok {
+		t.Fatalf("statements[0] is not ast.ExpressionStatement. got=%T", exp.Body.Statements[0])
+	}
+	stmt2, ok := exp.Body.Statements[1].(ast.Statement)
+	if !ok {
+		t.Fatalf("statements[1] is not ast.Statement. got=%T", exp.Body.Statements[1])
+	}
+	if !testAssignmentStatement(t, stmt2, "e") {
+		return
+	}
+}
+
+func TestWhileLoop(t *testing.T) {
+	input := `while(i < 10) { i = i+1; };`
+
+	l := lexer.New(input)
+
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program.Body does not contain %d statements. got=%d\n", 1, len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
+	}
+
+	exp, ok := stmt.Expression.(*ast.WhileLoop)
+	if !ok {
+		t.Fatalf("stmt.Expression is not ast.WhileLoop. got=%T", stmt.Expression)
+	}
+
+	if !testInfixExpression(t, exp.Test, "i", "<", 10) {
+		return
+	}
+
+	if len(exp.Body.Statements) != 1 {
+		t.Errorf("Body is not 1 statements. got=%d\n", len(exp.Body.Statements))
+	}
+
+	bodyStmt, ok := exp.Body.Statements[0].(ast.Statement)
+	if !ok {
+		t.Fatalf("statements[1] is not ast.Statement. got=%T", exp.Body.Statements[1])
+	}
+	if !testAssignmentStatement(t, bodyStmt, "i") {
+		return
+	}
 }

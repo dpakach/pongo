@@ -72,6 +72,8 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.STRING, p.parseStringLiteral)
 	p.registerPrefix(token.LBRACKET, p.parseArrayLiteral)
 	p.registerPrefix(token.LBRACE, p.parseHashLiteral)
+	p.registerPrefix(token.FOR, p.parseForLoop)
+	p.registerPrefix(token.WHILE, p.parseWhileLoop)
 
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
 	p.registerInfix(token.PLUS, p.parseInfixExpression)
@@ -497,4 +499,60 @@ func (p *Parser) parseAssignmentStatement() *ast.AssignmentStatement {
 		p.nextToken()
 	}
 	return stmt
+}
+
+func (p *Parser) parseForLoop() ast.Expression {
+	expression := &ast.ForLoop{Token: p.curToken}
+
+	if !p.expectPeek(token.LPAREN) {
+		return nil
+	}
+
+	p.nextToken()
+	expression.Setup = p.parseStatement()
+
+	p.nextToken()
+	expression.Test = p.parseExpression(LOWEST)
+	if !p.expectPeek(token.SEMICOLON) {
+		return nil
+	}
+	p.nextToken()
+
+	stmt := &ast.AssignmentStatement{Token: p.curToken}
+	stmt.Name = ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+	p.nextToken()
+	p.nextToken()
+	stmt.Value = p.parseExpression(LOWEST)
+	if !p.expectPeek(token.RPAREN) {
+		return nil
+	}
+	expression.Update = stmt
+
+	if !p.expectPeek(token.LBRACE) {
+		return nil
+	}
+
+	expression.Body = p.parseBlockStatement()
+	return expression
+}
+
+func (p *Parser) parseWhileLoop() ast.Expression {
+	expression := &ast.WhileLoop{Token: p.curToken}
+
+	if !p.expectPeek(token.LPAREN) {
+		return nil
+	}
+
+	p.nextToken()
+	expression.Test = p.parseExpression(LOWEST)
+	if !p.expectPeek(token.RPAREN) {
+		return nil
+	}
+
+	if !p.expectPeek(token.LBRACE) {
+		return nil
+	}
+
+	expression.Body = p.parseBlockStatement()
+	return expression
 }
