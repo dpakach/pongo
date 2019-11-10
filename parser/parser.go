@@ -3,9 +3,9 @@ package parser
 import (
 	"fmt"
 	"strconv"
-	"gorilla/ast"
-	"gorilla/lexer"
-	"gorilla/token"
+	"pongo/ast"
+	"pongo/lexer"
+	"pongo/token"
 )
 
 const (

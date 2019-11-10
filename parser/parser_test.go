@@ -2,8 +2,8 @@ package parser
 
 import (
 	"fmt"
-	"gorilla/ast"
-	"gorilla/lexer"
+	"pongo/ast"
+	"pongo/lexer"
 	"testing"
 )
 

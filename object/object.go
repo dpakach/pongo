@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"bytes"
 	"strings"
-	"gorilla/ast"
+	"pongo/ast"
 	"hash/fnv"
 )
 

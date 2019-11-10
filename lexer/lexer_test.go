@@ -1,7 +1,7 @@
 package lexer
 
 import (
-	"gorilla/token"
+	"pongo/token"
 	"testing"
 )
 

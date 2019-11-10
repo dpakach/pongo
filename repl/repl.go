@@ -4,10 +4,10 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"gorilla/lexer"
-	"gorilla/parser"
-	"gorilla/evaluator"
-	"gorilla/object"
+	"pongo/lexer"
+	"pongo/parser"
+	"pongo/evaluator"
+	"pongo/object"
 )
 
 const PROMPT = ":-/ >> "

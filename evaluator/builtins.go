@@ -2,7 +2,7 @@ package evaluator
 
 import (
 	"fmt"
-	"gorilla/object"
+	"pongo/object"
 )
 var builtins = map[string]*object.Builtin{
 	"len": &object.Builtin{

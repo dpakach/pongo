@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"gorilla/token"
+	"pongo/token"
 	"bytes"
 	"strings"
 )

@@ -1,9 +1,9 @@
 package evaluator
 
 import (
-	"gorilla/lexer"
-	"gorilla/object"
-	"gorilla/parser"
+	"pongo/lexer"
+	"pongo/object"
+	"pongo/parser"
 	"testing"
 	"fmt"
 )
@@ -363,15 +363,26 @@ func TestStringLiteral(t *testing.T) {
 }
 
 func TestStringConcatenation(t *testing.T) {
-	input := `"Hello" + " " + "world!"`
 
-	evaluated := testEval(input)
-	str, ok := evaluated.(*object.String)
-	if !ok {
-		t.Fatalf("object is not String. got=%T, (%+v)", evaluated, evaluated)
+	tests := []struct {
+		input string
+		expected string
+	} {
+		{ `12 + " Angry Men"`, "12 Angry Men" },
+		{ `"hello" + " world"`, "hello world" },
+		{ `"hello" + 5`, "hello5" },
+
 	}
-	if str.Value != "Hello world!" {
-		t.Errorf("String has wrong value. got=%q", str.Value)
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		str, ok := evaluated.(*object.String)
+		if !ok {
+			t.Fatalf("object is not String. got=%T (%+v), want=%T ", evaluated, evaluated, tt.expected)
+		}
+		if str.Value !=  tt.expected{
+			t.Errorf("String has wrong value. got=%q", str.Value)
+		}
 	}
 }
 
