@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"pongo/token"
+	"github.com/dpakach/pongo/token"
 	"bytes"
 	"strings"
 )

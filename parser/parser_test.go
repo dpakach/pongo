@@ -2,8 +2,8 @@ package parser
 
 import (
 	"fmt"
-	"pongo/ast"
-	"pongo/lexer"
+	"github.com/dpakach/pongo/ast"
+	"github.com/dpakach/pongo/lexer"
 	"testing"
 )
 

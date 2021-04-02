@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"pongo/object"
+	"github.com/dpakach/pongo/object"
 )
 var builtins = map[string]*object.Builtin{
 	"len": &object.Builtin{

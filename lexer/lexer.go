@@ -1,6 +1,6 @@
 package lexer
 
-import "pongo/token"
+import "github.com/dpakach/pongo/token"
 
 type Lexer struct {
 	input string

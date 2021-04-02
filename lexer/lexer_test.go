@@ -1,7 +1,7 @@
 package lexer
 
 import (
-	"pongo/token"
+	"github.com/dpakach/pongo/token"
 	"testing"
 )
 

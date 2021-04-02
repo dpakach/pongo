@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/user"
-	"pongo/repl"
+	"github.com/dpakach/pongo/repl"
 )
 
 func main() {

@@ -1,8 +1,8 @@
 package evaluator
 
 import (
-	"pongo/ast"
-	"pongo/object"
+	"github.com/dpakach/pongo/ast"
+	"github.com/dpakach/pongo/object"
 	"fmt"
 	"strconv"
 )

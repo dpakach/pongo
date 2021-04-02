@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"bytes"
 	"strings"
-	"pongo/ast"
+	"github.com/dpakach/pongo/ast"
 	"hash/fnv"
 )
 

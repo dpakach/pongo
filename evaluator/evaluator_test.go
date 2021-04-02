@@ -1,9 +1,9 @@
 package evaluator
 
 import (
-	"pongo/lexer"
-	"pongo/object"
-	"pongo/parser"
+	"github.com/dpakach/pongo/lexer"
+	"github.com/dpakach/pongo/object"
+	"github.com/dpakach/pongo/parser"
 	"testing"
 	"fmt"
 )

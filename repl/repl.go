@@ -4,10 +4,10 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"pongo/lexer"
-	"pongo/parser"
-	"pongo/evaluator"
-	"pongo/object"
+	"github.com/dpakach/pongo/lexer"
+	"github.com/dpakach/pongo/parser"
+	"github.com/dpakach/pongo/evaluator"
+	"github.com/dpakach/pongo/object"
 )
 
 const PROMPT = ":-/ >> "

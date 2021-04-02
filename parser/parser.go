@@ -3,9 +3,9 @@ package parser
 import (
 	"fmt"
 	"strconv"
-	"pongo/ast"
-	"pongo/lexer"
-	"pongo/token"
+	"github.com/dpakach/pongo/ast"
+	"github.com/dpakach/pongo/lexer"
+	"github.com/dpakach/pongo/token"
 )
 
 const (
