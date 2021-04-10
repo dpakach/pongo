@@ -1,16 +1,16 @@
 package evaluator
 
 import (
+	"fmt"
 	"github.com/dpakach/pongo/ast"
 	"github.com/dpakach/pongo/object"
-	"fmt"
 	"strconv"
 )
 
 var (
-	TRUE = &object.Boolean{Value: true}
+	TRUE  = &object.Boolean{Value: true}
 	FALSE = &object.Boolean{Value: false}
-	NULL = &object.Null{}
+	NULL  = &object.Null{}
 )
 
 func Eval(node ast.Node, env *object.Environment) object.Object {
@@ -143,7 +143,7 @@ func evalBlockStatement(block *ast.BlockStatement, env *object.Environment) obje
 	for _, statement := range block.Statements {
 		result = Eval(statement, env)
 
-		if result != nil{
+		if result != nil {
 			rt := result.Type()
 			if rt == object.RETURN_VALUE_OBJ || rt == object.ERROR_OBJ {
 				return result
@@ -188,7 +188,7 @@ func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
 }
 
 func evalInfixExpression(operator string, left, right object.Object) object.Object {
-	switch{
+	switch {
 	case left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ:
 		return evalIntegerInfixExpression(operator, left, right)
 	case operator == "==":
@@ -257,7 +257,7 @@ func evalForLoop(fl *ast.ForLoop, env *object.Environment) object.Object {
 	if !ok {
 		return newError("Test condition of the loop doesnot evaluate a boolean value: %s", fl.Test)
 	}
-	for (stop != FALSE) {
+	for stop != FALSE {
 		Eval(fl.Body, env)
 		Eval(fl.Update, env)
 		stop = Eval(fl.Test, env)
@@ -278,7 +278,7 @@ func evalWhileLoop(wl *ast.WhileLoop, env *object.Environment) object.Object {
 	if !ok {
 		return newError("Test condition of the loop doesnot evaluate a boolean value: %s", wl.Test)
 	}
-	for (stop != FALSE) {
+	for stop != FALSE {
 		Eval(wl.Body, env)
 		stop = Eval(wl.Test, env)
 		stop, ok = stop.(*object.Boolean)
@@ -348,7 +348,7 @@ func applyFunction(fn object.Object, args []object.Object) object.Object {
 	}
 }
 
-func extendedFunctionEnv(fn *object.Function, args []object.Object) *object.Environment{
+func extendedFunctionEnv(fn *object.Function, args []object.Object) *object.Environment {
 	env := object.NewEnclosedEnvironment(fn.Env)
 
 	for paramIdx, param := range fn.Parameters {
@@ -367,8 +367,8 @@ func unwrapReturnValue(obj object.Object) object.Object {
 
 func evalStringInfixExpression(operator string, left, right object.Object) object.Object {
 	validTypes := (left.Type() == object.INTEGER_OBJ && right.Type() == object.STRING_OBJ) ||
-			 (left.Type() == object.STRING_OBJ && right.Type() == object.INTEGER_OBJ) ||
-			 (left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ)
+		(left.Type() == object.STRING_OBJ && right.Type() == object.INTEGER_OBJ) ||
+		(left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ)
 	validOperators := operator == "+"
 	if !validOperators {
 		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
@@ -460,4 +460,3 @@ func evalHashIndexExpression(hash, index object.Object) object.Object {
 
 	return pair.Value
 }
-

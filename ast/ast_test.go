@@ -7,7 +7,7 @@ import (
 
 func TestString(t *testing.T) {
 	programString := "let myVar = anotherVar;"
-	program := &Program {
+	program := &Program{
 		Statements: []Statement{
 			&LetStatement{
 				Token: token.Token{Type: token.LET, Literal: "let"},

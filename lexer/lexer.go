@@ -3,13 +3,13 @@ package lexer
 import "github.com/dpakach/pongo/token"
 
 type Lexer struct {
-	input string
-	position int
+	input        string
+	position     int
 	readPosition int
-	ch byte
+	ch           byte
 }
 
-func New(input string) * Lexer {
+func New(input string) *Lexer {
 	l := &Lexer{input: input}
 	l.readChar()
 	return l
@@ -29,7 +29,7 @@ func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 	l.skipWhitespace()
 
-	switch l.ch{
+	switch l.ch {
 	case '=':
 		if l.peekChar() == '=' {
 			ch := l.ch
@@ -109,7 +109,7 @@ func (l *Lexer) readIdentifier() string {
 	for isLetter(l.ch) {
 		l.readChar()
 	}
-	return l.input[position: l.position]
+	return l.input[position:l.position]
 }
 
 func isLetter(ch byte) bool {

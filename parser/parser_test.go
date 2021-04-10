@@ -9,9 +9,9 @@ import (
 
 func TestLetStatements(t *testing.T) {
 	tests := []struct {
-		input string
+		input              string
 		expectedIdentifier string
-		expectedValue interface{}
+		expectedValue      interface{}
 	}{
 		{"let x = 5;", "x", 5},
 		{"let y = true;", "y", true},
@@ -24,14 +24,14 @@ func TestLetStatements(t *testing.T) {
 		checkParserErrors(t, p)
 		if len(program.Statements) != 1 {
 			t.Fatalf("program.Statements does not contain 1 statements. got=%d",
-			len(program.Statements))
+				len(program.Statements))
 		}
 		stmt := program.Statements[0]
-			if !testLetStatement(t, stmt, tt.expectedIdentifier) {
+		if !testLetStatement(t, stmt, tt.expectedIdentifier) {
 			return
 		}
 		val := stmt.(*ast.LetStatement).Value
-			if !testLiteralExpression(t, val, tt.expectedValue) {
+		if !testLiteralExpression(t, val, tt.expectedValue) {
 			return
 		}
 	}
@@ -141,7 +141,6 @@ func TestReturnStatements(t *testing.T) {
 		}
 	}
 }
-
 
 func TestIdentifierExpression(t *testing.T) {
 	input := "foobar;"
@@ -813,7 +812,6 @@ func TestCallExpressionParameterParsing(t *testing.T) {
 	}
 }
 
-
 func TestStringLiteralExpression(t *testing.T) {
 	input := `"hello world";`
 
@@ -869,7 +867,7 @@ func TestParsingIndexExpressions(t *testing.T) {
 	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
 	indexExp, ok := stmt.Expression.(*ast.IndexExpression)
 
-	if  !ok {
+	if !ok {
 		t.Fatalf("exp not *ast.IndexExpression, got=%T", stmt.Expression)
 	}
 
@@ -902,8 +900,8 @@ func TestParsingHashLiteralsStringKeys(t *testing.T) {
 	}
 
 	expected := map[string]int64{
-		"one": 1,
-		"two": 2,
+		"one":   1,
+		"two":   2,
 		"three": 3,
 	}
 	for key, value := range hash.Pairs {
@@ -956,7 +954,7 @@ func TestParsingHashLiteralsExpressions(t *testing.T) {
 		t.Errorf("hash.Pairs has wrong length. got=%d", len(hash.Pairs))
 	}
 
-	tests := map[string]func(ast.Expression) {
+	tests := map[string]func(ast.Expression){
 		"one": func(e ast.Expression) {
 			testInfixExpression(t, e, 0, "+", 1)
 		},
@@ -986,9 +984,9 @@ func TestParsingHashLiteralsExpressions(t *testing.T) {
 
 func TestAssignmentStatements(t *testing.T) {
 	tests := []struct {
-		input string
+		input              string
 		expectedIdentifier string
-		expectedValue interface{}
+		expectedValue      interface{}
 	}{
 		{"x = 5;", "x", 5},
 		{"y = true;", "y", true},
@@ -1001,7 +999,7 @@ func TestAssignmentStatements(t *testing.T) {
 		checkParserErrors(t, p)
 		if len(program.Statements) != 1 {
 			t.Fatalf("program.Statements does not contain 1 statements. got=%d",
-			len(program.Statements))
+				len(program.Statements))
 		}
 		stmt := program.Statements[0]
 		if !testAssignmentStatement(t, stmt, tt.expectedIdentifier) {

@@ -3,11 +3,11 @@ package repl
 import (
 	"bufio"
 	"fmt"
-	"io"
+	"github.com/dpakach/pongo/compiler"
 	"github.com/dpakach/pongo/lexer"
 	"github.com/dpakach/pongo/parser"
-	"github.com/dpakach/pongo/evaluator"
-	"github.com/dpakach/pongo/object"
+	"github.com/dpakach/pongo/vm"
+	"io"
 )
 
 const PROMPT = ":-/ >> "
@@ -16,7 +16,6 @@ var stack []string
 
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
-	env := object.NewEnvironment()
 
 	for {
 		fmt.Printf(PROMPT)
@@ -36,12 +35,23 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		evaluated := evaluator.Eval(program, env)
-		if evaluated != nil {
-			io.WriteString(out, evaluated.Inspect())
-			io.WriteString(out, "\n")
+		comp := compiler.New()
+		err := comp.Compile(program)
+		if err != nil {
+			fmt.Fprintf(out, "woops! compilation failed:\n %s\n", err)
+			continue
 		}
 
+		machine := vm.New(comp.Bytecode())
+		err = machine.Run()
+		if err != nil {
+			fmt.Fprintf(out, "Woops! executing bytecode failed:\n %s\n", err)
+		}
+
+		lastPopped := machine.LastPoppedElem()
+
+		io.WriteString(out, lastPopped.Inspect())
+		io.WriteString(out, "\n")
 	}
 }
 

@@ -3,10 +3,11 @@ package evaluator
 import (
 	"bufio"
 	"fmt"
+	"github.com/dpakach/pongo/object"
 	"os"
 	"strconv"
-	"github.com/dpakach/pongo/object"
 )
+
 var builtins = map[string]*object.Builtin{
 	"len": &object.Builtin{
 		Fn: func(args ...object.Object) object.Object {
@@ -30,7 +31,7 @@ var builtins = map[string]*object.Builtin{
 				return newError("wrong number of arguments. got %d, want=1", len(args))
 			}
 
-			if (args[0].Type() != object.ARRAY_OBJ) {
+			if args[0].Type() != object.ARRAY_OBJ {
 				return newError("argument to `first` must be ARRAY, got %s", args[0].Type())
 			}
 
@@ -50,7 +51,7 @@ var builtins = map[string]*object.Builtin{
 				return newError("wrong number of arguments. got %d, want=1", len(args))
 			}
 
-			if (args[0].Type() != object.ARRAY_OBJ) {
+			if args[0].Type() != object.ARRAY_OBJ {
 				return newError("argument to `last` must be ARRAY, got %s", args[0].Type())
 			}
 
@@ -58,7 +59,7 @@ var builtins = map[string]*object.Builtin{
 			length := len(arr.Elements)
 
 			if length > 0 {
-				return arr.Elements[length - 1]
+				return arr.Elements[length-1]
 			}
 
 			return NULL
@@ -70,7 +71,7 @@ var builtins = map[string]*object.Builtin{
 				return newError("wrong number of arguments. got %d, want=1", len(args))
 			}
 
-			if (args[0].Type() != object.ARRAY_OBJ) {
+			if args[0].Type() != object.ARRAY_OBJ {
 				return newError("argument to `rest` must be ARRAY, got %s", args[0].Type())
 			}
 
@@ -92,7 +93,7 @@ var builtins = map[string]*object.Builtin{
 				return newError("wrong number of arguments. got %d, want=1", len(args))
 			}
 
-			if (args[0].Type() != object.ARRAY_OBJ) {
+			if args[0].Type() != object.ARRAY_OBJ {
 				return newError("argument to `push` must be ARRAY, got %s", args[0].Type())
 			}
 
@@ -121,7 +122,7 @@ var builtins = map[string]*object.Builtin{
 				return newError("wrong number of arguments. got %d, want=1", len(args))
 			}
 
-			if (args[0].Type() != object.STRING_OBJ) {
+			if args[0].Type() != object.STRING_OBJ {
 				return newError("argument to `gets` must be STRING, got %s", args[0].Type())
 			}
 			fmt.Print(args[0].(*object.String).Value)
@@ -139,10 +140,10 @@ var builtins = map[string]*object.Builtin{
 				return newError("wrong number of arguments. got %d, want=1", len(args))
 			}
 
-			if (args[0].Type() != object.INTEGER_OBJ) {
+			if args[0].Type() != object.INTEGER_OBJ {
 				return newError("argument to `str` must be INTEGER, got %s", args[0].Type())
 			}
-			return &object.String{Value : strconv.Itoa(int(args[0].(*object.Integer).Value))}
+			return &object.String{Value: strconv.Itoa(int(args[0].(*object.Integer).Value))}
 		},
 	},
 	"int": &object.Builtin{
@@ -151,7 +152,7 @@ var builtins = map[string]*object.Builtin{
 				return newError("wrong number of arguments. got %d, want=1", len(args))
 			}
 
-			if (args[0].Type() != object.STRING_OBJ) {
+			if args[0].Type() != object.STRING_OBJ {
 				return newError("argument to `int` must be STRING, got %s", args[0].Type())
 			}
 			strVal := args[0].(*object.String)
@@ -159,7 +160,7 @@ var builtins = map[string]*object.Builtin{
 			if err != nil {
 				return newError("Could not convert %s to int", strVal.Value)
 			}
-			return &object.Integer{Value : int64(val)}
+			return &object.Integer{Value: int64(val)}
 		},
 	},
 	"type": &object.Builtin{
@@ -168,7 +169,7 @@ var builtins = map[string]*object.Builtin{
 				return newError("wrong number of arguments. got %d, want=1", len(args))
 			}
 
-			return &object.String{Value : string(args[0].Type())}
+			return &object.String{Value: string(args[0].Type())}
 		},
 	},
 }

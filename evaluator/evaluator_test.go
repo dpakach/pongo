@@ -1,16 +1,16 @@
 package evaluator
 
 import (
+	"fmt"
 	"github.com/dpakach/pongo/lexer"
 	"github.com/dpakach/pongo/object"
 	"github.com/dpakach/pongo/parser"
 	"testing"
-	"fmt"
 )
 
 func TestEvalIntegerExpression(t *testing.T) {
 	tests := []struct {
-		input string
+		input    string
 		expected int64
 	}{
 		{"5", 5},
@@ -62,8 +62,8 @@ func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
 }
 
 func TestEvalBooleanExpression(t *testing.T) {
-	tests := []struct{
-		input string
+	tests := []struct {
+		input    string
 		expected bool
 	}{
 		{"true", true},
@@ -115,7 +115,7 @@ func testBooleanObject(t *testing.T, obj object.Object, exptected bool) bool {
 
 func TestBangOperator(t *testing.T) {
 	tests := []struct {
-		input string
+		input     string
 		exptected bool
 	}{
 		{"!true", false},
@@ -134,9 +134,9 @@ func TestBangOperator(t *testing.T) {
 
 func TestIfElseExpression(t *testing.T) {
 	tests := []struct {
-		input string
+		input    string
 		expected interface{}
-	} {
+	}{
 		{"if (true) { 10 }", 10},
 		{"if (false) { 10 }", nil},
 		{"if (1) { 10 }", 10},
@@ -167,15 +167,15 @@ func testNullObject(t *testing.T, obj object.Object) bool {
 
 func TestReturnStatements(t *testing.T) {
 	tests := []struct {
-		input string
+		input    string
 		expected int64
-	} {
+	}{
 		{"return 10;", 10},
 		{"return 10; 9;", 10},
 		{"return 2 * 5; 9;", 10},
 		{"9; return 2 * 5; 9;", 10},
 		{
-		`
+			`
 		if (10 > 1) {
 		if (10 > 1) {
 		return 10;
@@ -184,7 +184,7 @@ func TestReturnStatements(t *testing.T) {
 			return 1;
 		}
 		`,
-		10,
+			10,
 		},
 	}
 
@@ -196,35 +196,35 @@ func TestReturnStatements(t *testing.T) {
 
 func TestErrorHandling(t *testing.T) {
 	tests := []struct {
-		input string
+		input           string
 		expectedMessage string
-	} {
+	}{
 		{
-		"5 + true;",
-		"type mismatch: INTEGER + BOOLEAN",
+			"5 + true;",
+			"type mismatch: INTEGER + BOOLEAN",
 		},
 		{
-		"5 + true; 5;",
-		"type mismatch: INTEGER + BOOLEAN",
+			"5 + true; 5;",
+			"type mismatch: INTEGER + BOOLEAN",
 		},
 		{
-		"-true",
-		"unknown operator: -BOOLEAN",
+			"-true",
+			"unknown operator: -BOOLEAN",
 		},
 		{
-		"true + false;",
-		"unknown operator: BOOLEAN + BOOLEAN",
+			"true + false;",
+			"unknown operator: BOOLEAN + BOOLEAN",
 		},
 		{
-		"5; true + false; 5",
-		"unknown operator: BOOLEAN + BOOLEAN",
+			"5; true + false; 5",
+			"unknown operator: BOOLEAN + BOOLEAN",
 		},
 		{
-		"if (10 > 1) { true + false; }",
-		"unknown operator: BOOLEAN + BOOLEAN",
+			"if (10 > 1) { true + false; }",
+			"unknown operator: BOOLEAN + BOOLEAN",
 		},
 		{
-		`
+			`
 		if (10 > 1) {
 		if (10 > 1) {
 		return true + false;
@@ -232,11 +232,11 @@ func TestErrorHandling(t *testing.T) {
 		return 1;
 		}
 		`,
-		"unknown operator: BOOLEAN + BOOLEAN",
+			"unknown operator: BOOLEAN + BOOLEAN",
 		},
 		{
-		"foobar",
-		"identifier not found: foobar",
+			"foobar",
+			"identifier not found: foobar",
 		},
 		{
 			`"Hello" - "World"`,
@@ -266,9 +266,9 @@ func TestErrorHandling(t *testing.T) {
 
 func TestLetStatement(t *testing.T) {
 	tests := []struct {
-		input string
+		input    string
 		expected int64
-	} {
+	}{
 		{"let a = 5; a;", 5},
 		{"let a = 5 * 5; a;", 25},
 		{"let a = 5; let b = a; b;", 5},
@@ -282,9 +282,9 @@ func TestLetStatement(t *testing.T) {
 
 func TestAssignmentStatements(t *testing.T) {
 	tests := []struct {
-		input string
+		input    string
 		expected int64
-	} {
+	}{
 		{"let a = 5; a = 34; a;", 34},
 		{"let a = 5 * 5; a = 5*6; a;", 30},
 		{"let a = 5; let b = a; b = a + 23; b;", 28},
@@ -322,7 +322,7 @@ func TestFunctionObject(t *testing.T) {
 
 func TestFunctionApplication(t *testing.T) {
 	tests := []struct {
-		input string
+		input    string
 		expected int64
 	}{
 		{"let identity = fn(x) { x; }; identity(5);", 5},
@@ -365,13 +365,12 @@ func TestStringLiteral(t *testing.T) {
 func TestStringConcatenation(t *testing.T) {
 
 	tests := []struct {
-		input string
+		input    string
 		expected string
-	} {
-		{ `12 + " Angry Men"`, "12 Angry Men" },
-		{ `"hello" + " world"`, "hello world" },
-		{ `"hello" + 5`, "hello5" },
-
+	}{
+		{`12 + " Angry Men"`, "12 Angry Men"},
+		{`"hello" + " world"`, "hello world"},
+		{`"hello" + 5`, "hello5"},
 	}
 
 	for _, tt := range tests {
@@ -380,7 +379,7 @@ func TestStringConcatenation(t *testing.T) {
 		if !ok {
 			t.Fatalf("object is not String. got=%T (%+v), want=%T ", evaluated, evaluated, tt.expected)
 		}
-		if str.Value !=  tt.expected{
+		if str.Value != tt.expected {
 			t.Errorf("String has wrong value. got=%q", str.Value)
 		}
 	}
@@ -388,9 +387,9 @@ func TestStringConcatenation(t *testing.T) {
 
 func TestBuiltInFunctions(t *testing.T) {
 	tests := []struct {
-		input string
+		input    string
 		expected interface{}
-	} {
+	}{
 		{`len("")`, 0},
 		{`len("four")`, 4},
 		{`len("hello world")`, 11},
@@ -439,10 +438,10 @@ func TestArrayLiterals(t *testing.T) {
 }
 
 func TestArrayIndexExpressions(t *testing.T) {
-	tests := []struct{
-		input  string
+	tests := []struct {
+		input    string
 		expected interface{}
-	} {
+	}{
 		{
 			"[1, 2, 3][0]",
 			1,
@@ -515,12 +514,12 @@ func TestHashLiterals(t *testing.T) {
 
 	expected := map[object.HashKey]int64{
 
-		(&object.String{Value: "one"}).HashKey(): 1,
-		(&object.String{Value: "two"}).HashKey(): 2,
+		(&object.String{Value: "one"}).HashKey():   1,
+		(&object.String{Value: "two"}).HashKey():   2,
 		(&object.String{Value: "three"}).HashKey(): 3,
-		(&object.Integer{Value: 4}).HashKey(): 4,
-		TRUE.HashKey(): 5,
-		FALSE.HashKey(): 6,
+		(&object.Integer{Value: 4}).HashKey():      4,
+		TRUE.HashKey():                             5,
+		FALSE.HashKey():                            6,
 	}
 
 	if len(result.Pairs) != len(expected) {
@@ -540,9 +539,9 @@ func TestHashLiterals(t *testing.T) {
 
 func TestHashIndexExpressions(t *testing.T) {
 	tests := []struct {
-		input string
+		input    string
 		expected interface{}
-	} {
+	}{
 		{
 			`{"foo": 5}["foo"]`,
 			5,
@@ -586,9 +585,9 @@ func TestHashIndexExpressions(t *testing.T) {
 
 func TestForLoop(t *testing.T) {
 	tests := []struct {
-		input string
+		input    string
 		expected interface{}
-	} {
+	}{
 		{"let s = 0; for(let i=0; i<10; i=i+1) { s = 24; s = i; }; s;", 9},
 		{"let s = 0; for(let i=0; i<10; i=i+1) { s = s + i; }; s;", 45},
 	}
@@ -606,9 +605,9 @@ func TestForLoop(t *testing.T) {
 
 func TestWhileLoop(t *testing.T) {
 	tests := []struct {
-		input string
+		input    string
 		expected interface{}
-	} {
+	}{
 		{"let s = 0; while(s < 10) { s = s + 1; }; s;", 10},
 		{"let s = 0; let p = 0; while( s < 10 ) { p = p + 5; s = s + 1; }; p;", 50},
 	}
@@ -623,4 +622,3 @@ func TestWhileLoop(t *testing.T) {
 		}
 	}
 }
-
